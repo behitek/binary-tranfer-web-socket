@@ -12,7 +12,7 @@
 using easywsclient::WebSocket;
 static WebSocket::pointer ws = NULL;
 
-void handle_message(const std::string & message)
+void handle_message(const std::string  &message)
 {
     printf(">>> %s\n", message.c_str());
     if (message == "OK") { ::ws->close(); }
@@ -31,27 +31,36 @@ int main()
     }
 #endif
 
-    ::ws = WebSocket::from_url("ws://localhost:8126/");
-    assert(::ws);
-    cv::Mat image = cv::imread("../test.jpg");
-    if(!image.data){
-        std::cout<<"No image data!";
+
+    VideoCapture cap;
+    cap.open("http://4co2.vp9.tv/chn/VTT4/v.m3u8");
+    if(!cap.isOpened()){
         return -1;
     }
-    cout<<"size: "<<image.rows<<", "<<image.cols<<endl;
-    image_encode image_encode_obj(image);
-    std::vector<uchar> img_uchar = image_encode_obj.image_encoder();
+    cv::Mat image;
 
-    // rows & cols maybe > 255 - max value of uchar type
-    img_uchar.push_back((uchar)(image.rows/256));
-    img_uchar.push_back((uchar)(image.rows%256));
-    img_uchar.push_back((uchar)(image.cols/256));
-    img_uchar.push_back((uchar)(image.cols%256));
+    while(cap.isOpened()){
+        cap.read(image);
+        if(!image.data){
+            std::cout<<"No image data!";
+            continue;
+        }
+        cv::imwrite("../test.jpg",image);
+        image_encode image_encode_obj(image);
+        std::vector<uchar> img_uchar = image_encode_obj.image_encoder();
 
-    ::ws->sendBinary(img_uchar);
-    while (::ws->getReadyState() != WebSocket::CLOSED) {
-      ::ws->poll();
-      ::ws->dispatch(handle_message);
+        // rows & cols maybe > 255 - max value of uchar type
+        img_uchar.push_back((uchar)(image.rows/256));
+        img_uchar.push_back((uchar)(image.rows%256));
+        img_uchar.push_back((uchar)(image.cols/256));
+        img_uchar.push_back((uchar)(image.cols%256));
+        ::ws = WebSocket::from_url("ws://localhost:8126/");
+        assert(::ws);
+        ::ws->sendBinary(img_uchar);
+        while (::ws->getReadyState() != WebSocket::CLOSED) {
+            ::ws->poll();
+            ::ws->dispatch(handle_message);
+        }
     }
     delete ::ws;
 #ifdef _WIN32

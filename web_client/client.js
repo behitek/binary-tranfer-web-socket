@@ -5,7 +5,7 @@ $(document).ready(function () {
         $('<p>Oh no, you need a browser that supports WebSockets. How about <a href="http://www.google.com/chrome">Google Chrome</a>?</p>').appendTo('#container');
     } else {
         //The user has WebSockets
-
+        $('img#my-img').attr('src','./error.jpg');
         connect();
 
         function connect() {
@@ -32,10 +32,12 @@ $(document).ready(function () {
 
                 socket.onclose = function () {
                     message('<p class="event">Socket Status: ' + socket.readyState + ' (Closed)');
+                    $('img#my-img').attr('src','./error.jpg');
                 }
 
             } catch (exception) {
                 message('Error' + exception);
+                $('img#my-img').attr('src','./error.jpg');
             }
 
             function message(msg) {

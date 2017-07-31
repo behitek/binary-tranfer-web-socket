@@ -1,0 +1,12 @@
+div.div-img {
+            width: 50%;
+            margin: 0px auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        img#my-img {
+            width: 100%;
+        }

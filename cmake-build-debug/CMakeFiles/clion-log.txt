@@ -1,4 +1,0 @@
-/home/hieunv/apps/clion-2017.2/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/hieunv/CLionProjects/WebSocketExample
--- Configuring done
--- Generating done
--- Build files have been written to: /home/hieunv/CLionProjects/WebSocketExample/cmake-build-debug

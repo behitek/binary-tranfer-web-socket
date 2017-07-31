@@ -23,17 +23,18 @@ var server = http.createServer();
 
 var wss = new WebSocketServer({ server: server, path: '/' });
 wss.on('connection', function (ws) {
-    console.log('A client connect to server');
+    // console.log('A client connect to server');
     ws.on('message', function (data, flags) {
-        console.log('receive data length ' + data.length)
+        // console.log('receive data length ' + data.length)
+        ws.send('ok');
         wss.clients.forEach(function each(client) {
             if (client !== ws && client.readyState === ws.OPEN) {
-                client.send(new Buffer(data,'binary').toString('base64'));
+                client.send(data);
             }
         });
     });
     ws.on('close', function () {
-        console.log('Connection closed!');
+        // console.log('Connection closed!');
     });
     ws.on('error', function (e) {
     });

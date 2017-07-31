@@ -22,9 +22,12 @@ $(document).ready(function () {
                 }
 
                 socket.onmessage = function (e) {
-                    // var arrived_data = e.data;
-                    $('img#my-img').attr("src","data:image/jpeg;base64,"+e.data);
-                    // message('Receving data: '+ arrived_data);
+                    var reader = new window.FileReader();
+                    reader.readAsDataURL(e.data);
+                    reader.onloadend = function () {
+                        base64data = reader.result;
+                        $('img#my-img').attr('src',base64data);
+                    }
                 }
 
                 socket.onclose = function () {
